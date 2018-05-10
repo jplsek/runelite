@@ -35,6 +35,7 @@ import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.Window;
+import java.awt.event.ItemEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -42,7 +43,6 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.util.Enumeration;
 import java.util.concurrent.Callable;
-import java.util.function.BiConsumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.ImageIcon;
@@ -250,9 +250,8 @@ public class SwingUtil
 	public static JButton createSwingButton(
 		@Nonnull final NavigationButton navigationButton,
 		int iconSize,
-		@Nullable final BiConsumer<NavigationButton, JButton> specialCallback)
+		@Nullable final Runnable specialCallback)
 	{
-
 		final BufferedImage scaledImage = iconSize > 0
 			? resizeImage(navigationButton.getIcon(), iconSize, iconSize)
 			: navigationButton.getIcon();
@@ -267,7 +266,7 @@ public class SwingUtil
 		{
 			if (specialCallback != null)
 			{
-				specialCallback.accept(navigationButton, button);
+				specialCallback.run();
 			}
 
 			if (navigationButton.getOnClick() != null)
@@ -289,6 +288,19 @@ public class SwingUtil
 
 			button.setComponentPopupMenu(popupMenu);
 		}
+
+		navigationButton.addItemListener(e ->
+		{
+			switch (e.getStateChange())
+			{
+				case ItemEvent.SELECTED:
+					button.setSelected(true);
+					break;
+				case ItemEvent.DESELECTED:
+					button.setSelected(false);
+					break;
+			}
+		});
 
 		navigationButton.setOnSelect(button::doClick);
 		return button;

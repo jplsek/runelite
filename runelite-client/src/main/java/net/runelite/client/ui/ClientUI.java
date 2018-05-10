@@ -130,7 +130,6 @@ public class ClientUI
 	private PluginPanel pluginPanel;
 	private ClientPluginToolbar pluginToolbar;
 	private ClientTitleToolbar titleToolbar;
-	private JButton currentButton;
 	private NavigationButton currentNavButton;
 	private boolean sidebarOpen;
 	private JPanel container;
@@ -229,42 +228,26 @@ public class ClientUI
 	{
 		SwingUtilities.invokeLater(() ->
 		{
-			final JButton button = SwingUtil.createSwingButton(event.getButton(), 0, (navButton, jButton) ->
+			final JButton button = SwingUtil.createSwingButton(event.getButton(), 0, () ->
 			{
-				final PluginPanel panel = navButton.getPanel();
+				final PluginPanel panel = event.getButton().getPanel();
 
 				if (panel == null)
 				{
 					return;
 				}
 
-				boolean doClose = currentButton != null && currentButton == jButton && currentButton.isSelected();
+				boolean doClose = currentNavButton != null && currentNavButton == event.getButton() && currentNavButton.isSelected();
 
 				if (doClose)
 				{
 					contract();
-					currentButton.setSelected(false);
 					currentNavButton.setSelected(false);
-					currentButton = null;
 					currentNavButton = null;
 				}
 				else
 				{
-					if (currentButton != null)
-					{
-						currentButton.setSelected(false);
-					}
-
-					if (currentNavButton != null)
-					{
-						currentNavButton.setSelected(false);
-					}
-
-					currentButton = jButton;
-					currentNavButton = navButton;
-					currentButton.setSelected(true);
-					currentNavButton.setSelected(true);
-					expand(panel);
+					expand(panel, event.getButton());
 				}
 			});
 
@@ -584,12 +567,6 @@ public class ClientUI
 		boolean isSidebarOpen = sidebarOpen;
 		sidebarOpen = !sidebarOpen;
 
-		// Select/deselect buttons
-		if (currentButton != null)
-		{
-			currentButton.setSelected(sidebarOpen);
-		}
-
 		if (currentNavButton != null)
 		{
 			currentNavButton.setSelected(sidebarOpen);
@@ -613,7 +590,7 @@ public class ClientUI
 			sidebarNavigationJButton.setToolTipText("Close SideBar");
 
 			// Try to restore last panel
-			expand(lastPluginPanel);
+			expand(lastPluginPanel, null);
 
 			// Add plugin toolbar back
 			container.add(pluginToolbar);
@@ -634,11 +611,22 @@ public class ClientUI
 		}
 	}
 
-	private void expand(@Nullable PluginPanel panel)
+	public void expand(@Nullable PluginPanel panel, @Nullable NavigationButton navButton)
 	{
 		if (panel == null)
 		{
 			return;
+		}
+
+		if (navButton != null)
+		{
+			if (currentNavButton != null)
+			{
+				currentNavButton.setSelected(false);
+			}
+
+			currentNavButton = navButton;
+			currentNavButton.setSelected(true);
 		}
 
 		if (!sidebarOpen)
