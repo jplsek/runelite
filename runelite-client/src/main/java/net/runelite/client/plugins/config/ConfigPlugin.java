@@ -30,14 +30,17 @@ import java.util.concurrent.ScheduledExecutorService;
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.swing.SwingUtilities;
+import net.runelite.client.config.ConfigDescriptor;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.config.RuneLiteConfig;
 import net.runelite.client.events.PluginChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginManager;
+import net.runelite.client.ui.ClientUI;
 import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.ui.PluginToolbar;
+import net.runelite.client.ui.TitleToolbar;
 
 @PluginDescriptor(
 	name = "Configuration",
@@ -48,6 +51,9 @@ public class ConfigPlugin extends Plugin
 {
 	@Inject
 	private PluginToolbar pluginToolbar;
+
+	@Inject
+	private TitleToolbar titleToolbar;
 
 	@Inject
 	private ConfigManager configManager;
@@ -61,8 +67,12 @@ public class ConfigPlugin extends Plugin
 	@Inject
 	private RuneLiteConfig runeLiteConfig;
 
+	@Inject
+	private ClientUI clientUI;
+
 	private ConfigPanel configPanel;
 	private NavigationButton navButton;
+	private NavigationButton titleBarButton;
 
 	@Override
 	protected void startUp() throws Exception
@@ -82,12 +92,33 @@ public class ConfigPlugin extends Plugin
 			.build();
 
 		pluginToolbar.addNavigation(navButton);
+
+		BufferedImage shortcutIcon;
+
+		synchronized (ImageIO.class)
+		{
+			shortcutIcon = ImageIO.read(getClass().getResourceAsStream("gear_icon.png"));
+		}
+
+		titleBarButton = NavigationButton.builder()
+				.tooltip("RuneLite Configuration")
+				.icon(shortcutIcon)
+				.onClick(() ->
+				{
+					final ConfigDescriptor configDescriptor = configManager.getConfigDescriptor(runeLiteConfig);
+					configPanel.openGroupConfigPanel(runeLiteConfig, configDescriptor, configManager);
+					navButton.setSelected(true);
+					clientUI.expand(configPanel, navButton);
+				}).build();
+
+		titleToolbar.addNavigation(titleBarButton);
 	}
 
 	@Override
 	protected void shutDown() throws Exception
 	{
 		pluginToolbar.removeNavigation(navButton);
+		titleToolbar.removeNavigation(titleBarButton);
 	}
 
 	@Subscribe
