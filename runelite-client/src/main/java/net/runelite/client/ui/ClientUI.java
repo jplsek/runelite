@@ -229,47 +229,49 @@ public class ClientUI
 	{
 		SwingUtilities.invokeLater(() ->
 		{
-			final JButton button = SwingUtil.createSwingButton(event.getButton(), 0, (navButton, jButton) ->
-			{
-				final PluginPanel panel = navButton.getPanel();
-
-				if (panel == null)
-				{
-					return;
-				}
-
-				boolean doClose = currentButton != null && currentButton == jButton && currentButton.isSelected();
-
-				if (doClose)
-				{
-					contract();
-					currentButton.setSelected(false);
-					currentNavButton.setSelected(false);
-					currentButton = null;
-					currentNavButton = null;
-				}
-				else
-				{
-					if (currentButton != null)
-					{
-						currentButton.setSelected(false);
-					}
-
-					if (currentNavButton != null)
-					{
-						currentNavButton.setSelected(false);
-					}
-
-					currentButton = jButton;
-					currentNavButton = navButton;
-					currentButton.setSelected(true);
-					currentNavButton.setSelected(true);
-					expand(panel);
-				}
-			});
+			final JButton button = SwingUtil.createSwingButton(event.getButton(), 0, this::handleButtonPress);
 
 			pluginToolbar.addComponent(event.getIndex(), event.getButton(), button);
 		});
+	}
+
+	private void handleButtonPress(NavigationButton navButton, JButton jButton)
+	{
+		final PluginPanel panel = navButton.getPanel();
+
+		if (panel == null)
+		{
+			return;
+		}
+
+		boolean doClose = currentButton != null && currentButton == jButton && currentButton.isSelected();
+
+		if (doClose)
+		{
+			contract();
+			currentButton.setSelected(false);
+			currentNavButton.setSelected(false);
+			currentButton = null;
+			currentNavButton = null;
+		}
+		else
+		{
+			if (currentButton != null)
+			{
+				currentButton.setSelected(false);
+			}
+
+			if (currentNavButton != null)
+			{
+				currentNavButton.setSelected(false);
+			}
+
+			currentButton = jButton;
+			currentNavButton = navButton;
+			currentButton.setSelected(true);
+			currentNavButton.setSelected(true);
+			expand(panel);
+		}
 	}
 
 	@Subscribe
@@ -284,7 +286,7 @@ public class ClientUI
 		SwingUtilities.invokeLater(() ->
 		{
 			final int iconSize = ClientTitleToolbar.TITLEBAR_SIZE - 6;
-			final JButton button = SwingUtil.createSwingButton(event.getButton(), iconSize, null);
+			final JButton button = SwingUtil.createSwingButton(event.getButton(), iconSize, this::handleButtonPress);
 
 			if (config.enableCustomChrome() || SwingUtil.isCustomTitlePanePresent(frame))
 			{

@@ -359,7 +359,7 @@ public class ConfigPanel extends PluginPanel
 		}
 	}
 
-	private void openGroupConfigPanel(Config config, ConfigDescriptor cd, ConfigManager configManager)
+	public void openGroupConfigPanel(Config config, ConfigDescriptor cd, ConfigManager configManager)
 	{
 		scrollBarPosition = getScrollPane().getVerticalScrollBar().getValue();
 		removeAll();
