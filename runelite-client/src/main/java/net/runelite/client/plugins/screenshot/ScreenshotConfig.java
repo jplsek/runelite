@@ -129,6 +129,7 @@ public interface ScreenshotConfig extends Config
 		keyName = "screenshotDirectory",
 		name = "Screenshot Directory",
 		description = "Configure the location of the screenshot directory",
+		sync = false,
 		position = 8
 	)
 	default File screenshotDirectory()

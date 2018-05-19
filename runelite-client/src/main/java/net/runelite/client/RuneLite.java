@@ -201,8 +201,14 @@ public class RuneLite
 			eventBus.register(itemManager.get());
 		}
 
+		// Start client session
+		clientSessionManager.start();
+
+		// Load the session, including saved configuration
+		sessionManager.loadSession();
+
 		// Load user configuration
-		configManager.load();
+		//configManager.load();
 
 		// Tell the plugin manager if client is outdated or not
 		pluginManager.setOutdated(isOutdated);
@@ -214,12 +220,6 @@ public class RuneLite
 		// Plugins have provided their config, so set default config
 		// to main settings
 		pluginManager.loadDefaultPluginConfiguration();
-
-		// Start client session
-		clientSessionManager.start();
-
-		// Load the session, including saved configuration
-		sessionManager.loadSession();
 
 		// Start plugins
 		pluginManager.startCorePlugins();

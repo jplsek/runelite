@@ -381,25 +381,25 @@ public class ConfigPanel extends PluginPanel
 		{
 			JCheckBox checkbox = (JCheckBox) component;
 			checkbox.setOpaque(false);
-			configManager.setConfiguration(cd.getGroup().keyName(), cid.getItem().keyName(), "" + checkbox.isSelected());
+			configManager.setConfiguration(cd.getGroup().keyName(), cid.getItem().keyName(), "" + checkbox.isSelected(), cid.getItem().sync());
 		}
 
 		if (component instanceof JSpinner)
 		{
 			JSpinner spinner = (JSpinner) component;
-			configManager.setConfiguration(cd.getGroup().keyName(), cid.getItem().keyName(), "" + spinner.getValue());
+			configManager.setConfiguration(cd.getGroup().keyName(), cid.getItem().keyName(), "" + spinner.getValue(), cid.getItem().sync());
 		}
 
 		if (component instanceof JTextField)
 		{
 			JTextField textField = (JTextField) component;
-			configManager.setConfiguration(cd.getGroup().keyName(), cid.getItem().keyName(), textField.getText());
+			configManager.setConfiguration(cd.getGroup().keyName(), cid.getItem().keyName(), textField.getText(), cid.getItem().sync());
 		}
 
 		if (component instanceof JColorChooser)
 		{
 			JColorChooser jColorChooser = (JColorChooser) component;
-			configManager.setConfiguration(cd.getGroup().keyName(), cid.getItem().keyName(), String.valueOf(jColorChooser.getColor().getRGB()));
+			configManager.setConfiguration(cd.getGroup().keyName(), cid.getItem().keyName(), String.valueOf(jColorChooser.getColor().getRGB()), cid.getItem().sync());
 		}
 
 		if (component instanceof JComboBox)
@@ -407,7 +407,7 @@ public class ConfigPanel extends PluginPanel
 			JComboBox jComboBox = (JComboBox) component;
 			jComboBox.setRenderer(new ComboBoxListRenderer());
 			jComboBox.setForeground(Color.WHITE);
-			configManager.setConfiguration(cd.getGroup().keyName(), cid.getItem().keyName(), ((Enum) jComboBox.getSelectedItem()).name());
+			configManager.setConfiguration(cd.getGroup().keyName(), cid.getItem().keyName(), ((Enum) jComboBox.getSelectedItem()).name(), cid.getItem().sync());
 		}
 	}
 
@@ -538,7 +538,7 @@ public class ConfigPanel extends PluginPanel
 				heightSpinnerTextField.setColumns(4);
 
 				ChangeListener listener = e ->
-					configManager.setConfiguration(cd.getGroup().keyName(), cid.getItem().keyName(), widthSpinner.getValue() + "x" + heightSpinner.getValue());
+					configManager.setConfiguration(cd.getGroup().keyName(), cid.getItem().keyName(), widthSpinner.getValue() + "x" + heightSpinner.getValue(), cid.getItem().sync());
 
 				widthSpinner.addChangeListener(listener);
 				heightSpinner.addChangeListener(listener);

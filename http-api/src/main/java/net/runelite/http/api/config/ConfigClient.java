@@ -41,9 +41,7 @@ import org.slf4j.LoggerFactory;
 public class ConfigClient
 {
 	private static final Logger logger = LoggerFactory.getLogger(ConfigClient.class);
-
 	private static final MediaType TEXT_PLAIN = MediaType.parse("text/plain");
-
 	private final UUID uuid;
 
 	public ConfigClient(UUID uuid)
