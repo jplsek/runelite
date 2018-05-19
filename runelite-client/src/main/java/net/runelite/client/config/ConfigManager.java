@@ -463,6 +463,10 @@ public class ConfigManager
 		{
 			return Enum.valueOf((Class<? extends Enum>) type, str);
 		}
+		if (type == File.class)
+		{
+			return new File(str);
+		}
 		return str;
 	}
 
@@ -490,6 +494,11 @@ public class ConfigManager
 		{
 			Rectangle r = (Rectangle)object;
 			return r.x + ":" + r.y + ":" + r.width + ":" + r.height;
+		}
+		if (object instanceof File)
+		{
+			File f = (File) object;
+			return f.getAbsolutePath();
 		}
 		return object.toString();
 	}
