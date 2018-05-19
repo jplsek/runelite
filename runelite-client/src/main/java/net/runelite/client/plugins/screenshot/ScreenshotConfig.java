@@ -24,6 +24,8 @@
  */
 package net.runelite.client.plugins.screenshot;
 
+import java.io.File;
+import static net.runelite.client.RuneLite.RUNELITE_DIR;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
@@ -121,5 +123,16 @@ public interface ScreenshotConfig extends Config
 	default boolean isScreenshotEnabled()
 	{
 		return false;
+	}
+
+	@ConfigItem(
+		keyName = "screenshotDirectory",
+		name = "Screenshot Directory",
+		description = "Configure the location of the screenshot directory",
+		position = 8
+	)
+	default File screenshotDirectory()
+	{
+		return new File(RUNELITE_DIR, "screenshots");
 	}
 }
