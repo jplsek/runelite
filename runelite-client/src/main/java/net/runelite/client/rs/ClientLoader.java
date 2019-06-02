@@ -99,6 +99,7 @@ public class ClientLoader
 
 				try (Response response = RuneLiteAPI.CLIENT.newCall(request).execute())
 				{
+					long s = System.currentTimeMillis();
 					JarInputStream jis = new JarInputStream(response.body().byteStream());
 
 					byte[] tmp = new byte[4096];
@@ -138,6 +139,8 @@ public class ClientLoader
 
 						zipFile.put(metadata.getName(), buffer.toByteArray());
 					}
+
+					log.info("Uncompressing and validating OSRS client took {}ms", System.currentTimeMillis() - s);
 				}
 			}
 
@@ -173,6 +176,8 @@ public class ClientLoader
 
 			if (updateCheckMode == AUTO)
 			{
+				long start = System.currentTimeMillis();
+
 				ByteArrayOutputStream patchOs = new ByteArrayOutputStream(756 * 1024);
 				int patchCount = 0;
 
@@ -196,7 +201,7 @@ public class ClientLoader
 					++patchCount;
 				}
 
-				log.debug("Patched {} classes", patchCount);
+				log.info("Patched {} classes. Took {}ms", patchCount, System.currentTimeMillis() - start);
 			}
 
 			String initialClass = config.getInitialClass();
