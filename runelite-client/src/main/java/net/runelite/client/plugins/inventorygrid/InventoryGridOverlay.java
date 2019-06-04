@@ -49,13 +49,15 @@ class InventoryGridOverlay extends Overlay
 	private static final Color HIGHLIGHT = new Color(0, 255, 0, 45);
 	private static final Color GRID = new Color(255, 255, 255, 45);
 
+	private final InventoryGridPlugin plugin;
 	private final InventoryGridConfig config;
 	private final Client client;
 	private final ItemManager itemManager;
 
 	@Inject
-	private InventoryGridOverlay(InventoryGridConfig config, Client client, ItemManager itemManager)
+	private InventoryGridOverlay(InventoryGridPlugin plugin, InventoryGridConfig config, Client client, ItemManager itemManager)
 	{
+		this.plugin = plugin;
 		this.itemManager = itemManager;
 		this.client = client;
 		this.config = config;
@@ -70,7 +72,7 @@ class InventoryGridOverlay extends Overlay
 		final Widget if1DraggingWidget = client.getIf1DraggedWidget();
 		final Widget inventoryWidget = client.getWidget(WidgetInfo.INVENTORY);
 
-		if (if1DraggingWidget == null || if1DraggingWidget != inventoryWidget)
+		if (!plugin.isDragging() || if1DraggingWidget == null || if1DraggingWidget != inventoryWidget)
 		{
 			return null;
 		}
