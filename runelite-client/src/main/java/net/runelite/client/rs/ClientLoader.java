@@ -52,6 +52,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
+import net.runelite.client.net.LauncherSocket;
 import static net.runelite.client.rs.ClientUpdateCheckMode.AUTO;
 import static net.runelite.client.rs.ClientUpdateCheckMode.NONE;
 import static net.runelite.client.rs.ClientUpdateCheckMode.VANILLA;
@@ -66,6 +67,9 @@ public class ClientLoader
 {
 	private final ClientConfigLoader clientConfigLoader;
 	private ClientUpdateCheckMode updateCheckMode;
+
+	@Inject
+	private LauncherSocket launcherSocket;
 
 	@Inject
 	private ClientLoader(
@@ -85,6 +89,8 @@ public class ClientLoader
 
 		try
 		{
+			launcherSocket.send("Unpacking and verifying OSRS client...");
+
 			RSConfig config = clientConfigLoader.fetch();
 
 			Map<String, byte[]> zipFile = new HashMap<>();
@@ -173,6 +179,8 @@ public class ClientLoader
 
 			if (updateCheckMode == AUTO)
 			{
+				launcherSocket.send("Patching OSRS client...");
+
 				ByteArrayOutputStream patchOs = new ByteArrayOutputStream(756 * 1024);
 				int patchCount = 0;
 

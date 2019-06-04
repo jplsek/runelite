@@ -54,6 +54,7 @@ import net.runelite.client.game.ClanManager;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.game.LootManager;
 import net.runelite.client.game.chatbox.ChatboxPanelManager;
+import net.runelite.client.net.LauncherSocket;
 import net.runelite.client.menus.MenuManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginInstantiationException;
@@ -114,6 +115,9 @@ public class RuneLite
 
 	@Inject
 	private PartyService partyService;
+
+	@Inject
+	private LauncherSocket launcherSocket;
 
 	@Inject
 	private Provider<ItemManager> itemManager;
@@ -237,6 +241,8 @@ public class RuneLite
 			injector.injectMembers(client);
 		}
 
+		launcherSocket.send("Loading configuration...");
+
 		// Load user configuration
 		configManager.load();
 
@@ -245,6 +251,8 @@ public class RuneLite
 
 		// Tell the plugin manager if client is outdated or not
 		pluginManager.setOutdated(isOutdated);
+
+		launcherSocket.send("Loading plugins...");
 
 		// Load the plugins, but does not start them yet.
 		// This will initialize configuration
@@ -257,8 +265,13 @@ public class RuneLite
 		// Start client session
 		clientSessionManager.start();
 
+		launcherSocket.send("Loading interface...");
+
 		// Initialize UI
 		clientUI.open(this);
+
+		// Done sending the launcher messages
+		launcherSocket.close();
 
 		// Initialize Discord service
 		discordService.init();
